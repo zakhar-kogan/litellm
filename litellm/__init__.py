@@ -115,6 +115,26 @@ def identify(event_details):
     if "user" in event_details:
         _thread_context.user = event_details["user"]
 
+####### GETTING OPENROUTER MODELS ###################
+def get_openrouter_models():
+    import requests
+    import json
+    # try calling get_openrouter_models() to get the latest list of models
+    try:
+        response = requests.get("https://openrouter.ai/api/v1/models")
+        return [model["id"] for model in json.loads(response.text)['data']]
+    except:
+        return [
+    "google/palm-2-codechat-bison",
+    "google/palm-2-chat-bison",
+    "openai/gpt-3.5-turbo",
+    "openai/gpt-3.5-turbo-16k",
+    "openai/gpt-4-32k",
+    "anthropic/claude-2",
+    "anthropic/claude-instant-v1",
+    "meta-llama/llama-2-13b-chat",
+    "meta-llama/llama-2-70b-chat",
+    ]
 
 ####### ADDITIONAL PARAMS ################### configurable params if you use proxy models like Helicone, map spend to org id, etc.
 api_base = None
@@ -125,6 +145,80 @@ config_path = None
 ####### Secret Manager #####################
 secret_manager_client = None
 ####### COMPLETION MODELS ###################
+models = {}
+
+models['openai'] = [
+    "gpt-4",
+    "gpt-4-0613",
+    "gpt-4-32k",
+    "gpt-4-32k-0613",
+    #################
+    "gpt-3.5-turbo",
+    "gpt-3.5-turbo-16k",
+    "gpt-3.5-turbo-0613",
+    "gpt-3.5-turbo-16k-0613",
+]
+
+models['openai_text'] = ["text-davinci-003"]
+
+models['cohere'] = [
+    "command-nightly",
+    "command",
+    "command-light",
+    "command-medium-beta",
+    "command-xlarge-beta",
+]
+
+models['anthropic'] = ["claude-2", "claude-instant-1", "claude-instant-1.2"]
+
+models['replicate'] = [
+    "replicate/",
+    "replicate/llama-2-70b-chat:58d078176e02c219e11eb4da5a02a7830a283b14cf8f94537af893ccff5ee781",
+    "a16z-infra/llama-2-13b-chat:2a7f981751ec7fdf87b5b91ad4db53683a98082e9ff7bfd12c8cd5ea85980a52",
+    "joehoover/instructblip-vicuna13b:c4c54e3c8c97cd50c2d2fec9be3b6065563ccf7d43787fb99f84151b867178fe"
+    "replicate/dolly-v2-12b:ef0e1aefc61f8e096ebe4db6b2bacc297daf2ef6899f0f7e001ec445893500e5",
+    "a16z-infra/llama-2-7b-chat:7b0bfc9aff140d5b75bacbed23e91fd3c34b01a1e958d32132de6e0a19796e2c",
+    "replicate/vicuna-13b:6282abe6a492de4145d7bb601023762212f9ddbbe78278bd6771c8b3b2f2a13b",
+    "daanelson/flan-t5-large:ce962b3f6792a57074a601d3979db5839697add2e4e02696b3ced4c022d4767f",
+    "replit/replit-code-v1-3b:b84f4c074b807211cd75e3e8b1589b6399052125b4c27106e43d47189e8415ad"
+]
+
+models['openrouter'] = get_openrouter_models()
+
+models["vertex_chat"] = ["chat-bison", "chat-bison@001"]
+
+
+models["vertex_text"] = ["text-bison", "text-bison@001"]
+
+models["huggingface"] = [
+    "meta-llama/Llama-2-7b-hf",
+    "meta-llama/Llama-2-7b-chat-hf",
+    "meta-llama/Llama-2-13b-hf",
+    "meta-llama/Llama-2-13b-chat-hf",
+    "meta-llama/Llama-2-70b-hf",
+    "meta-llama/Llama-2-70b-chat-hf",
+    "meta-llama/Llama-2-7b",
+    "meta-llama/Llama-2-7b-chat",
+    "meta-llama/Llama-2-13b",
+    "meta-llama/Llama-2-13b-chat",
+    "meta-llama/Llama-2-70b",
+    "meta-llama/Llama-2-70b-chat",
+]  # these have been tested on extensively. But by default all text2text-generation and text-generation models are supported by liteLLM. - https://docs.litellm.ai/docs/completion/supported
+
+models["ai21"] = ["j2-ultra", "j2-mid", "j2-light"]
+
+models["together_ai"] = [
+    "togethercomputer/llama-2-70b-chat",
+    "togethercomputer/Llama-2-7B-32K-Instruct",
+    "togethercomputer/llama-2-7b"
+]
+
+models["baseten"] = [
+    "qvv0xeq", # FALCON 7B
+    "q841o8w", # WizardLM
+    "31dxrj3" # Mosaic ML
+]
+
 open_ai_chat_completion_models = [
     "gpt-4",
     "gpt-4-0613",
@@ -205,6 +299,7 @@ baseten_models = [
     "q841o8w", # WizardLM
     "31dxrj3" # Mosaic ML
 ]
+
 
 model_list = (
     open_ai_chat_completion_models
